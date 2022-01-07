@@ -14,6 +14,57 @@ const btn_right = document.querySelector("#right");
 const btn_default = document.querySelector("#default");
 const btn_color = document.querySelector("#color");
 
+// Global functions
+function createEditLink(t) {
+  const a = document.createElement("a");
+  const parent = document.createElement("div");
+  const input_text = document.createElement("input");
+  const input_href = document.createElement("input");
+  const save = document.createElement("button");
+  const check = document.createElement("input");
+  const label = document.createElement("label");
+  save.textContent = "Save";
+  save.setAttribute("type", "button");
+
+  input_text.setAttribute("placeholder", "title");
+  input_href.setAttribute("placeholder", "URL");
+  input_text.setAttribute("type", "text");
+  input_href.setAttribute("type", "text");
+  check.setAttribute("type", "checkbox");
+  check.setAttribute("value", "on");
+  label.textContent = "Open the link in a new window";
+
+  parent.style.cssText = `
+display: grid;
+position: absolute;
+top: ${t.getBoundingClientRect().top}px;
+left: ${t.getBoundingClientRect().left}px;
+transform: translate(-50%, -50%);`;
+
+  parent.appendChild(input_text);
+  parent.appendChild(input_href);
+  parent.appendChild(check);
+  parent.appendChild(label);
+  parent.appendChild(save);
+  btn_link.parentElement.appendChild(parent);
+
+  save.onclick = function () {
+    const title = input_text.value;
+    const link_h = input_href.value;
+    a.textContent = title;
+    a.href = link_h;
+
+    if (check.checked == true) a.setAttribute("target", "_blank");
+
+    let range = document.createRange();
+
+    range.selectNode(t);
+    range.insertNode(a);
+    t.remove();
+    parent.remove();
+  };
+}
+
 body_content.addEventListener("click", (e) => {
   let hover = document.querySelectorAll(":hover");
   let t = hover.item(hover.length - 1);
@@ -56,6 +107,33 @@ body_content.addEventListener("click", (e) => {
     real_node("h3", btn_h3);
     real_node("div", btn_default);
   }
+
+  if (t.localName == "a") {
+    const parent = document.createElement("div");
+    const nameURL = document.createElement("span");
+    const btnEdit = document.createElement("button");
+    parent.style.cssText = `
+    position: absolute;
+    top: ${t.getBoundingClientRect().top}px;
+    left: ${t.getBoundingClientRect().left}px;
+    transform: translate(-50%, -50%);
+    background-color: #333;
+    color: #FFF;
+    padding: 10px;
+    `;
+    nameURL.textContent = t.href;
+    btnEdit.textContent = "Edit";
+
+    parent.appendChild(nameURL);
+    parent.appendChild(btnEdit);
+    t.parentElement.appendChild(parent);
+
+    btnEdit.onclick = function () {
+      createEditLink(t);
+      parent.remove();
+    }
+    
+  }
 });
 
 body_content.addEventListener("dblclick", (e) => {
@@ -67,39 +145,6 @@ body_content.addEventListener("dblclick", (e) => {
   }
 });
 
-function handle_heighlight(e) {
-  console.log("run.. func");
-  // let front_ele = document.createElement("font");
-  btn_color.onchange = function () {
-    let val = btn_color.value;
-
-    let range, newNode;
-
-    // front_ele.style.color = val
-
-    // console.log(window.getSelection())
-    // const start_pos = window.getSelection().extentOffset
-    // const length_chars = window.getSelection().baseOffset
-    // const text = e.textContent.trim().substr(start_pos, length_chars)
-    // const all_text = window.getSelection().anchorNode.data;
-
-    // let ele_target = e
-    // let get_InnerHTML = ele_target.innerHTML;
-    // let index = get_InnerHTML.indexOf(text);
-
-    // if (index > -1) {
-    //   ele_target = `${get_InnerHTML.substring(0, index)} <font style="color: ${val}">
-    //     ${get_InnerHTML.substring(index, index+text.length)}
-    //   </font>`
-    // }
-
-    // if (e.localName == "p") {
-    //   let para = document.createElement("p");
-    //   para.innerHTML = ele_target
-    //   e.parentNode.appendChild(para);
-    // }
-  };
-}
 
 function store_target(t) {
   const div = document.createElement("div");
@@ -158,65 +203,6 @@ function store_target(t) {
   };
 
   btn_link.onclick = function () {
-    const parent = document.createElement("div");
-    const input_text = document.createElement("input");
-    const input_href = document.createElement("input");
-    const save = document.createElement("button");
-    const check = document.createElement("input");
-    const label = document.createElement("label");
-    save.textContent = "Save";
-    save.setAttribute("type", "button");
-
-    input_text.setAttribute("placeholder", "title");
-    input_href.setAttribute("placeholder", "URL");
-    input_text.setAttribute("type", "text");
-    input_href.setAttribute("type", "text");
-    check.setAttribute("type", "checkbox");
-    check.setAttribute("value", "on");
-    label.textContent = "Open the link in a new window";
-
-    parent.style.cssText = `
-    display: grid;
-    position: absolute;
-    top: ${t.getBoundingClientRect().top}px;
-    left: ${t.getBoundingClientRect().left}px;
-    transform: translate(-50%, -50%);`;
-
-    parent.appendChild(input_text);
-    parent.appendChild(input_href);
-    parent.appendChild(check);
-    parent.appendChild(label);
-    parent.appendChild(save);
-    btn_link.parentElement.appendChild(parent);
-
-    save.onclick = function () {
-      const title = input_text.value;
-      const link_h = input_href.value;
-      a.textContent = title;
-      a.href = link_h;
-
-      if (check.checked == true) a.setAttribute("target", "_blank");
-
-      let range = document.createRange();
-
-      range.selectNode(t);
-      range.insertNode(a);
-      t.remove();
-      parent.remove();
-    };
+    createEditLink(t)
   };
 }
-
-// selectNodeContents
-// surroundContents
-// selectNode
-// insertNode
-// window.createRange()
-// window.createRange().surroundContents()
-// Node.cloneNode()
-// window.getSelection()
-// window.getSelection().getRangeAt(0).commonAncestorContainer
-// appendChild
-// insertBefore
-// insertBefore + nextSibling
-// replaceChild
