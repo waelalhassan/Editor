@@ -2,10 +2,14 @@ const body_content = document.querySelector("#body");
 const btn_h1 = document.querySelector("#Heading_1");
 const btn_h2 = document.querySelector("#Heading_2");
 const btn_h3 = document.querySelector("#Heading_3");
+const btn_h4 = document.querySelector("#Heading_4");
+const btn_h5 = document.querySelector("#Heading_5");
+const btn_h6 = document.querySelector("#Heading_6");
 
 const tools = document.querySelectorAll("#tools button");
 const Heading = document.querySelector("#Heading");
 const toggle_heading = document.querySelector("#toggle-heading");
+
 const btn_center = document.querySelector("#center");
 const btn_link = document.querySelector("#link");
 const btn_italic = document.querySelector("#italic");
@@ -111,6 +115,20 @@ body_content.addEventListener("click", (e) => {
   } else {
     store_target(t);
 
+
+    // let range = document.createRange()
+    // range.setStart(t.firstChild, 0);
+    // range.setEnd(t.firstChild, 2);
+  
+    // console.log(range)
+
+
+
+
+
+
+
+
     function real_node(ndoeName, btn) {
       for (let iv = 0; iv < tools.length; iv++) {
         if (target_local_name == ndoeName) {
@@ -129,6 +147,9 @@ body_content.addEventListener("click", (e) => {
     real_node("h1", btn_h1);
     real_node("h2", btn_h2);
     real_node("h3", btn_h3);
+    real_node("h4", btn_h4);
+    real_node("h5", btn_h5);
+    real_node("h4", btn_h6);
     real_node("div", btn_default);
 
     tools.forEach(e => {
@@ -203,6 +224,7 @@ function store_target(t) {
   const p = document.createElement("p");
   const a = document.createElement("a");
   const target_index = Array.from(t.parentNode.children).indexOf(t);
+
   p.style.cssText = paragraph_style;
   h1.style.cssText = heading_style;
   h2.style.cssText = heading_style;
@@ -211,17 +233,17 @@ function store_target(t) {
   h5.style.cssText = heading_style;
   h6.style.cssText = heading_style;
 
-
-
   function main_function(btn, newNode, textNode) {
     btn.onclick = function () {
 
       let Range = document.createRange();
       newNode.textContent = t.textContent;
-      if (t.localName != textNode) {
-        Range.selectNode(t);
-        Range.insertNode(newNode);
-        t.remove();
+      if (t.localName !== textNode) {
+          Range.selectNode(t)
+          Range.insertNode(newNode);
+          t.remove();
+      } else {
+        console.log("no")
       }
     };
   }
@@ -229,6 +251,9 @@ function store_target(t) {
   main_function(btn_h1, h1, "h1");
   main_function(btn_h2, h2, "h2");
   main_function(btn_h3, h3, "h3");
+  main_function(btn_h4, h4, "h4");
+  main_function(btn_h5, h5, "h5");
+  main_function(btn_h6, h6, "h6");
   main_function(btn_paragraph, p, "p");
   main_function(btn_default, div, "div");
   // main_function(btn_link, link, "a");
@@ -259,11 +284,26 @@ function store_target(t) {
     }
   };
 
-  btn_color.onchange = function () {
-    t.style.color = btn_color.value;
-  };
-
   btn_link.onclick = function () {
     createEditLink(t);
   };
 }
+
+// change color selected string
+btn_color.addEventListener("click", () => {
+  let rng = window.getSelection().getRangeAt(0);
+
+  btn_color.addEventListener("change", () => {
+    let selectContent = rng.extractContents();    
+    console.log(rng.startContainer)
+    let span_s = document.createElement("span");
+    span_s.style.color = btn_color.value
+    span_s.appendChild(selectContent)
+    rng.insertNode(span_s)
+  })
+})
+
+
+
+
+
