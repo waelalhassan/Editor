@@ -115,20 +115,6 @@ body_content.addEventListener("click", (e) => {
   } else {
     store_target(t);
 
-
-    // let range = document.createRange()
-    // range.setStart(t.firstChild, 0);
-    // range.setEnd(t.firstChild, 2);
-  
-    // console.log(range)
-
-
-
-
-
-
-
-
     function real_node(ndoeName, btn) {
       for (let iv = 0; iv < tools.length; iv++) {
         if (target_local_name == ndoeName) {
@@ -152,10 +138,9 @@ body_content.addEventListener("click", (e) => {
     real_node("h4", btn_h6);
     real_node("div", btn_default);
 
-    tools.forEach(e => {
-      if (e.classList.contains("active") && e.textContent.match(/h/ig)) {
-
-        switch(e.id) {
+    tools.forEach((e) => {
+      if (e.classList.contains("active") && e.textContent.match(/h/gi)) {
+        switch (e.id) {
           case "Heading_1":
             span.textContent = "1";
             break;
@@ -175,12 +160,10 @@ body_content.addEventListener("click", (e) => {
             span.textContent = "6";
             break;
         }
-      
-        Heading.appendChild(span)
+
+        Heading.appendChild(span);
       }
-    })
-
-
+    });
   }
 
   if (t.localName == "a") {
@@ -235,15 +218,14 @@ function store_target(t) {
 
   function main_function(btn, newNode, textNode) {
     btn.onclick = function () {
-
       let Range = document.createRange();
       newNode.textContent = t.textContent;
       if (t.localName !== textNode) {
-          Range.selectNode(t)
-          Range.insertNode(newNode);
-          t.remove();
+        Range.selectNode(t);
+        Range.insertNode(newNode);
+        t.remove();
       } else {
-        console.log("no")
+        console.log("no");
       }
     };
   }
@@ -276,11 +258,33 @@ function store_target(t) {
     }
   };
 
-  btn_bold.onclick = function () {
-    if (t.style.fontWeight == "bold") {
-      t.style.fontWeight = "";
-    } else {
-      t.style.fontWeight = "bold";
+  btn_bold.onclick = function (event) {
+    const nodeBold = document.createElement("b");
+    const iRange = window.getSelection().getRangeAt(0);
+    const selectedText = iRange.extractContents();
+    const checkIfSelectedText = selectedText.childNodes.length;
+
+    t.querySelectorAll("b").forEach((e) => {
+      if (e.children.length > 0) {
+        event.preventDefault();
+      }
+    });
+
+    if (t) {
+      if (checkIfSelectedText >= 1) {
+        if (t.localName == "b") {
+          iRange.insertNode(selectedText);
+        } else {
+          nodeBold.appendChild(selectedText);
+          iRange.insertNode(nodeBold);
+        }
+      } else {
+        if (t.style.fontWeight == "bold") {
+          t.style.fontWeight = "";
+        } else {
+          t.style.fontWeight = "bold";
+        }
+      }
     }
   };
 
@@ -294,16 +298,10 @@ btn_color.addEventListener("click", () => {
   let rng = window.getSelection().getRangeAt(0);
 
   btn_color.addEventListener("change", () => {
-    let selectContent = rng.extractContents();    
-    console.log(rng.startContainer)
+    let selectContent = rng.extractContents();
     let span_s = document.createElement("span");
-    span_s.style.color = btn_color.value
-    span_s.appendChild(selectContent)
-    rng.insertNode(span_s)
-  })
-})
-
-
-
-
-
+    span_s.style.color = btn_color.value;
+    span_s.appendChild(selectContent);
+    rng.insertNode(span_s);
+  });
+});
