@@ -18,7 +18,8 @@ body {
 }
 
 .content .body {
-    width: inherit;
+    width: 762px;
+    max-width: 762px;
     padding: 20px;
     height: 100%;
     border: 1px solid gray;
@@ -27,13 +28,14 @@ body {
 }
 
 .content .tools {
+    position: relative;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
 }
 
 .content .tools button {
-    padding: 5px 20px;
+    padding: 5px 32px;
     font-size: 18px;
     border: none;
     outline: none;
@@ -42,9 +44,28 @@ body {
     cursor: pointer;
 }
 
+.content .tools button > svg {
+    width: 12px;
+    font-size: 50px;
+    vertical-align: middle;
+}
+
+.content .tools .toggle-heading {
+    position: absolute;
+    width: inherit;
+    top: 100%;
+    transform: translateX(50%);
+    display: grid;
+    visibility: hidden;
+}
+
+.content .tools .toggle-heading.active {
+    visibility: visible;
+}
+
 .content .tools input[type="color"] {
     display: block;
-    padding: 5px 20px;
+    padding: 5px 32px;
 }
 
 .content .tools button.active {

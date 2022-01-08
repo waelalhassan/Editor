@@ -1,9 +1,11 @@
 const body_content = document.querySelector("#body");
-const btn_h1 = document.querySelector("#makeHeadding_1");
-const btn_h2 = document.querySelector("#makeHeadding_2");
-const btn_h3 = document.querySelector("#makeHeadding_3");
+const btn_h1 = document.querySelector("#Heading_1");
+const btn_h2 = document.querySelector("#Heading_2");
+const btn_h3 = document.querySelector("#Heading_3");
 
 const tools = document.querySelectorAll("#tools button");
+const Heading = document.querySelector("#Heading");
+const toggle_heading = document.querySelector("#toggle-heading");
 const btn_center = document.querySelector("#center");
 const btn_link = document.querySelector("#link");
 const btn_italic = document.querySelector("#italic");
@@ -13,6 +15,26 @@ const btn_left = document.querySelector("#left");
 const btn_right = document.querySelector("#right");
 const btn_default = document.querySelector("#default");
 const btn_color = document.querySelector("#color");
+
+const paragraph_style = `padding-bottom: 10px;
+word-break: break-all;`;
+const heading_style = `margin-bottom: 10px`;
+
+Heading.onmouseenter = function () {
+  toggle_heading.classList.add("active");
+};
+
+toggle_heading.onmouseenter = function () {
+  toggle_heading.classList.add("active");
+};
+
+Heading.onmouseleave = function () {
+  toggle_heading.classList.remove("active");
+};
+
+toggle_heading.onmouseleave = function () {
+  toggle_heading.classList.remove("active");
+};
 
 // Global functions
 function createEditLink(t) {
@@ -65,17 +87,19 @@ transform: translate(-50%, -50%);`;
   };
 }
 
+const span = document.createElement("span");
+
 body_content.addEventListener("click", (e) => {
   let hover = document.querySelectorAll(":hover");
   let t = hover.item(hover.length - 1);
   let target_local_name = t.localName;
 
   const p = document.createElement("p");
-  p.style.cssText = `padding-bottom: 5px`;
+  p.style.cssText = paragraph_style;
   const br = document.createElement("br");
   p.appendChild(br);
 
-  if (body_content.children.length <= 1) {
+  if (body_content.children.length < 1) {
     if (body_content.firstChild.nodeName == "#text") {
       body_content.removeChild(body_content.firstChild);
       body_content.appendChild(p);
@@ -106,6 +130,36 @@ body_content.addEventListener("click", (e) => {
     real_node("h2", btn_h2);
     real_node("h3", btn_h3);
     real_node("div", btn_default);
+
+    tools.forEach(e => {
+      if (e.classList.contains("active") && e.textContent.match(/h/ig)) {
+
+        switch(e.id) {
+          case "Heading_1":
+            span.textContent = "1";
+            break;
+          case "Heading_2":
+            span.textContent = "2";
+            break;
+          case "Heading_3":
+            span.textContent = "3";
+            break;
+          case "Heading_4":
+            span.textContent = "4";
+            break;
+          case "Heading_5":
+            span.textContent = "5";
+            break;
+          case "Heading_6":
+            span.textContent = "6";
+            break;
+        }
+      
+        Heading.appendChild(span)
+      }
+    })
+
+
   }
 
   if (t.localName == "a") {
@@ -131,20 +185,9 @@ body_content.addEventListener("click", (e) => {
     btnEdit.onclick = function () {
       createEditLink(t);
       parent.remove();
-    }
-    
+    };
   }
 });
-
-body_content.addEventListener("dblclick", (e) => {
-  const input_t_h = document.querySelectorAll(":hover");
-  const input_t = input_t_h.item(input_t_h.length - 1);
-
-  if (!input_t.classList.contains("body")) {
-    handle_heighlight(input_t);
-  }
-});
-
 
 function store_target(t) {
   const div = document.createElement("div");
@@ -160,9 +203,19 @@ function store_target(t) {
   const p = document.createElement("p");
   const a = document.createElement("a");
   const target_index = Array.from(t.parentNode.children).indexOf(t);
+  p.style.cssText = paragraph_style;
+  h1.style.cssText = heading_style;
+  h2.style.cssText = heading_style;
+  h3.style.cssText = heading_style;
+  h4.style.cssText = heading_style;
+  h5.style.cssText = heading_style;
+  h6.style.cssText = heading_style;
+
+
 
   function main_function(btn, newNode, textNode) {
     btn.onclick = function () {
+
       let Range = document.createRange();
       newNode.textContent = t.textContent;
       if (t.localName != textNode) {
@@ -191,11 +244,19 @@ function store_target(t) {
   handleTextAlign(btn_right, "right");
 
   btn_italic.onclick = function () {
-    t.style.fontStyle = "italic";
+    if (t.style.fontStyle == "italic") {
+      t.style.fontStyle = "";
+    } else {
+      t.style.fontStyle = "italic";
+    }
   };
 
   btn_bold.onclick = function () {
-    t.style.fontWeight = "bold";
+    if (t.style.fontWeight == "bold") {
+      t.style.fontWeight = "";
+    } else {
+      t.style.fontWeight = "bold";
+    }
   };
 
   btn_color.onchange = function () {
@@ -203,6 +264,6 @@ function store_target(t) {
   };
 
   btn_link.onclick = function () {
-    createEditLink(t)
+    createEditLink(t);
   };
 }
