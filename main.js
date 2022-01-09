@@ -94,8 +94,9 @@ transform: translate(-50%, -50%);`;
 const span = document.createElement("span");
 
 body_content.addEventListener("click", (e) => {
-  let hover = document.querySelectorAll(":hover");
-  let t = hover.item(hover.length - 1);
+  // let hover = document.querySelectorAll(":hover");
+  // let t = hover.item(hover.length - 1);
+  let t = e.target;
   let target_local_name = t.localName;
 
   const p = document.createElement("p");
@@ -113,8 +114,118 @@ body_content.addEventListener("click", (e) => {
   if (e.target.classList.contains("body")) {
     e.preventDefault();
   } else {
-    store_target(t);
+    // start main function
+    const div = document.createElement("div");
+    const h1 = document.createElement("h1");
+    const h2 = document.createElement("h2");
+    const h3 = document.createElement("h3");
+    const h4 = document.createElement("h4");
+    const h5 = document.createElement("h5");
+    const h6 = document.createElement("h6");
+    const b = document.createElement("b");
+    const i = document.createElement("i");
+    const span = document.createElement("span");
+    const p = document.createElement("p");
+    const a = document.createElement("a");
+    const target_index = Array.from(t.parentNode.children).indexOf(t);
 
+    p.style.cssText = paragraph_style;
+    h1.style.cssText = heading_style;
+    h2.style.cssText = heading_style;
+    h3.style.cssText = heading_style;
+    h4.style.cssText = heading_style;
+    h5.style.cssText = heading_style;
+    h6.style.cssText = heading_style;
+
+    function main_function(btn, newNode, textNode) {
+      btn.onclick = function () {
+        let Range = document.createRange();
+        newNode.textContent = t.textContent;
+        if (t.localName !== textNode) {
+          Range.selectNode(t);
+          Range.insertNode(newNode);
+          t.remove();
+        } else {
+          console.log("no");
+        }
+      };
+    }
+
+    main_function(btn_h1, h1, "h1");
+    main_function(btn_h2, h2, "h2");
+    main_function(btn_h3, h3, "h3");
+    main_function(btn_h4, h4, "h4");
+    main_function(btn_h5, h5, "h5");
+    main_function(btn_h6, h6, "h6");
+    main_function(btn_paragraph, p, "p");
+    main_function(btn_default, div, "div");
+    // main_function(btn_link, link, "a");
+
+    function handleTextAlign(btn, textAlignValue) {
+      btn.onclick = function () {
+        t.style.textAlign = textAlignValue;
+      };
+    }
+
+    handleTextAlign(btn_center, "center");
+    handleTextAlign(btn_left, "left");
+    handleTextAlign(btn_right, "right");
+
+    btn_italic.onclick = function () {
+      if (t.style.fontStyle == "italic") {
+        t.style.fontStyle = "";
+      } else {
+        t.style.fontStyle = "italic";
+      }
+    };
+
+    function getSelectedElement() {
+      let selection = window.getSelection();
+      if (selection.rangeCount > 0)
+        return selection.getRangeAt(0).startContainer.parentNode;
+    }
+
+    btn_bold.onclick = function (event) {
+      let nodeBold = document.createElement("b");
+      let iRange = window.getSelection().getRangeAt(0);
+      let selectedText = iRange.extractContents();
+      let checkIfSelectedText = selectedText.childNodes.length;
+
+      if (typeof t == null && typeof t === undefined) {
+        event.preventDefault();
+      }
+
+      if (checkIfSelectedText >= 1) {
+        if (t.localName == "b") {
+          iRange.selectNode(t);
+          iRange.insertNode(selectedText);
+          t.remove();
+        } else {
+          nodeBold.appendChild(selectedText);
+          iRange.insertNode(nodeBold);
+        }
+      } else {
+        if (t.style.fontWeight == "bold") {
+          t.style.fontWeight = "";
+        } else {
+          t.style.fontWeight = "bold";
+        }
+      }
+
+      if (window.getSelection) {
+        if (window.getSelection().empty) {
+          window.getSelection().empty();
+        } else if (window.getSelection().removeAllRanges) {
+          window.getSelection().removeAllRanges();
+        }
+      }
+    };
+
+    btn_link.onclick = function () {
+      createEditLink(t);
+    };
+
+    // real node
     function real_node(ndoeName, btn) {
       for (let iv = 0; iv < tools.length; iv++) {
         if (target_local_name == ndoeName) {
@@ -191,107 +302,7 @@ body_content.addEventListener("click", (e) => {
       parent.remove();
     };
   }
-});
-
-function store_target(t) {
-  const div = document.createElement("div");
-  const h1 = document.createElement("h1");
-  const h2 = document.createElement("h2");
-  const h3 = document.createElement("h3");
-  const h4 = document.createElement("h4");
-  const h5 = document.createElement("h5");
-  const h6 = document.createElement("h6");
-  const b = document.createElement("b");
-  const i = document.createElement("i");
-  const span = document.createElement("span");
-  const p = document.createElement("p");
-  const a = document.createElement("a");
-  const target_index = Array.from(t.parentNode.children).indexOf(t);
-
-  p.style.cssText = paragraph_style;
-  h1.style.cssText = heading_style;
-  h2.style.cssText = heading_style;
-  h3.style.cssText = heading_style;
-  h4.style.cssText = heading_style;
-  h5.style.cssText = heading_style;
-  h6.style.cssText = heading_style;
-
-  function main_function(btn, newNode, textNode) {
-    btn.onclick = function () {
-      let Range = document.createRange();
-      newNode.textContent = t.textContent;
-      if (t.localName !== textNode) {
-        Range.selectNode(t);
-        Range.insertNode(newNode);
-        t.remove();
-      } else {
-        console.log("no");
-      }
-    };
-  }
-
-  main_function(btn_h1, h1, "h1");
-  main_function(btn_h2, h2, "h2");
-  main_function(btn_h3, h3, "h3");
-  main_function(btn_h4, h4, "h4");
-  main_function(btn_h5, h5, "h5");
-  main_function(btn_h6, h6, "h6");
-  main_function(btn_paragraph, p, "p");
-  main_function(btn_default, div, "div");
-  // main_function(btn_link, link, "a");
-
-  function handleTextAlign(btn, textAlignValue) {
-    btn.onclick = function () {
-      t.style.textAlign = textAlignValue;
-    };
-  }
-
-  handleTextAlign(btn_center, "center");
-  handleTextAlign(btn_left, "left");
-  handleTextAlign(btn_right, "right");
-
-  btn_italic.onclick = function () {
-    if (t.style.fontStyle == "italic") {
-      t.style.fontStyle = "";
-    } else {
-      t.style.fontStyle = "italic";
-    }
-  };
-
-  btn_bold.onclick = function (event) {
-    const nodeBold = document.createElement("b");
-    const iRange = window.getSelection().getRangeAt(0);
-    const selectedText = iRange.extractContents();
-    const checkIfSelectedText = selectedText.childNodes.length;
-
-    t.querySelectorAll("b").forEach((e) => {
-      if (e.children.length > 0) {
-        event.preventDefault();
-      }
-    });
-
-    if (t) {
-      if (checkIfSelectedText >= 1) {
-        if (t.localName == "b") {
-          iRange.insertNode(selectedText);
-        } else {
-          nodeBold.appendChild(selectedText);
-          iRange.insertNode(nodeBold);
-        }
-      } else {
-        if (t.style.fontWeight == "bold") {
-          t.style.fontWeight = "";
-        } else {
-          t.style.fontWeight = "bold";
-        }
-      }
-    }
-  };
-
-  btn_link.onclick = function () {
-    createEditLink(t);
-  };
-}
+}); // end body_content
 
 // change color selected string
 btn_color.addEventListener("click", () => {
