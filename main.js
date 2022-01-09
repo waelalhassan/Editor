@@ -139,14 +139,21 @@ body_content.addEventListener("click", (e) => {
 
     function main_function(btn, newNode, textNode) {
       btn.onclick = function () {
-        let Range = document.createRange();
-        newNode.textContent = t.textContent;
-        if (t.localName !== textNode) {
-          Range.selectNode(t);
-          Range.insertNode(newNode);
-          t.remove();
-        } else {
-          console.log("no");
+        let selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          let getRange = selection.getRangeAt(0);
+          let parentNode = getRange.startContainer.parentNode;
+
+          if (parentNode.parentElement.getAttribute("id") == "body") {
+            if (parentNode.localName !== textNode) {
+              let nodeValue = document.createTextNode(
+                getRange.commonAncestorContainer.nodeValue
+              );
+              parentNode.remove();
+              newNode.appendChild(nodeValue);
+              getRange.insertNode(newNode);
+            }
+          }
         }
       };
     }
