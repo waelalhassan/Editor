@@ -172,51 +172,73 @@ body_content.addEventListener("click", (e) => {
     handleTextAlign(btn_right, "right");
 
     btn_italic.onclick = function () {
-      if (t.style.fontStyle == "italic") {
-        t.style.fontStyle = "";
-      } else {
-        t.style.fontStyle = "italic";
+      let nodeItalic = document.createElement("i");
+      let iRange = window.getSelection();
+
+      if (iRange.rangeCount > 0) {
+        let getR = iRange.getRangeAt(0);
+        let selectedText = getR.extractContents();
+        let checkIfSelectedText = selectedText.childNodes.length;
+
+        if (checkIfSelectedText >= 1) {
+          if (t.localName == "b") {
+            getR.selectNode(t);
+            getR.insertNode(selectedText);
+            t.remove();
+          } else {
+            nodeItalic.appendChild(selectedText);
+            getR.insertNode(nodeItalic);
+          }
+
+          if (window.getSelection) {
+            if (window.getSelection().empty) {
+              window.getSelection().empty();
+            } else if (window.getSelection().removeAllRanges) {
+              window.getSelection().removeAllRanges();
+            }
+          }
+        } else {
+          if (t.style.fontStyle == "italic") {
+            t.style.fontStyle = "";
+          } else {
+            t.style.fontStyle = "italic";
+          }
+        }
       }
     };
 
-    function getSelectedElement() {
-      let selection = window.getSelection();
-      if (selection.rangeCount > 0)
-        return selection.getRangeAt(0).startContainer.parentNode;
-    }
-
-    btn_bold.onclick = function (event) {
+    btn_bold.onclick = function () {
       let nodeBold = document.createElement("b");
-      let iRange = window.getSelection().getRangeAt(0);
-      let selectedText = iRange.extractContents();
-      let checkIfSelectedText = selectedText.childNodes.length;
+      let iRange = window.getSelection();
 
-      if (typeof t == null && typeof t === undefined) {
-        event.preventDefault();
-      }
+      if (iRange.rangeCount > 0) {
+        let getR = iRange.getRangeAt(0);
+        let selectedText = getR.extractContents();
+        let checkIfSelectedText = selectedText.childNodes.length;
 
-      if (checkIfSelectedText >= 1) {
-        if (t.localName == "b") {
-          iRange.selectNode(t);
-          iRange.insertNode(selectedText);
-          t.remove();
+        if (checkIfSelectedText >= 1) {
+          if (t.localName == "b") {
+            getR.selectNode(t);
+            getR.insertNode(selectedText);
+            t.remove();
+          } else {
+            nodeBold.appendChild(selectedText);
+            getR.insertNode(nodeBold);
+          }
+
+          if (window.getSelection) {
+            if (window.getSelection().empty) {
+              window.getSelection().empty();
+            } else if (window.getSelection().removeAllRanges) {
+              window.getSelection().removeAllRanges();
+            }
+          }
         } else {
-          nodeBold.appendChild(selectedText);
-          iRange.insertNode(nodeBold);
-        }
-      } else {
-        if (t.style.fontWeight == "bold") {
-          t.style.fontWeight = "";
-        } else {
-          t.style.fontWeight = "bold";
-        }
-      }
-
-      if (window.getSelection) {
-        if (window.getSelection().empty) {
-          window.getSelection().empty();
-        } else if (window.getSelection().removeAllRanges) {
-          window.getSelection().removeAllRanges();
+          if (t.style.fontWeight == "bold") {
+            t.style.fontWeight = "";
+          } else {
+            t.style.fontWeight = "bold";
+          }
         }
       }
     };
