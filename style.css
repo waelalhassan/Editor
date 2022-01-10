@@ -5,6 +5,7 @@
 }
 
 body {
+    position: relative;
     font-family: sans-serif;
     height: 100vh;
     display: grid;
@@ -14,7 +15,6 @@ body {
 
 .content {
     height: 500px;
-    position: relative;
 }
 
 .content .body {
@@ -64,8 +64,17 @@ body {
 }
 
 .content .tools input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
     display: block;
-    padding: 5px 32px;
+    background-color: #FFF;
+}
+
+.content .tools input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+.content .tools input[type="color"]::-webkit-color-swatch {
+	border: none;
 }
 
 .content .tools button.active {
@@ -76,4 +85,39 @@ body {
 .content .tools button:hover {
     background-color: #FFF;
     color: #333;
+}
+
+.content .add-edit-link {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fafafa;
+    padding: 15px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.content .add-edit-link input {
+    display: block;
+    outline: none;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+.content .add-edit-link label,
+.content .add-edit-link button {
+    display: inline-block;
+}
+
+.content .add-edit-link label,
+.content .add-edit-link input[type="checkbox"] {
+    display: inline-block;
+    padding: 10px 5px;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+}
+
+.content .add-edit-link button:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
