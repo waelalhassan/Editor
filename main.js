@@ -143,6 +143,28 @@ body_content.addEventListener("click", (e) => {
         if (selection.rangeCount > 0) {
           let getRange = selection.getRangeAt(0);
           let parentNode = getRange.startContainer.parentNode;
+          let parentE = parentNode.parentElement;
+
+          if (parentNode.localName == "span") {
+            let dk = parentNode.parentElement.childNodes;
+            function getNewElement(tagName, contents) {
+              let newElement = document.createElement(tagName);
+              if (typeof tagName === "undefined") {
+                newElement = document.createTextNode(contents);
+              } else {
+                newElement.innerHTML = contents;
+              }
+              return newElement;
+            }
+
+            for (let i of dk) {
+              if (parentNode.localName !== textNode) {
+                parentE.remove();
+                newNode.appendChild(getNewElement(i.localName, i.textContent));
+                getRange.insertNode(newNode);
+              }
+            }
+          }
 
           if (parentNode.parentElement.getAttribute("id") == "body") {
             if (parentNode.localName !== textNode) {
@@ -251,7 +273,6 @@ body_content.addEventListener("click", (e) => {
     };
 
     // change color selected string
-    let spanColor = document.createElement("span");
     btn_color.onclick = function () {
       let rng = window.getSelection();
       let getRange = rng.getRangeAt(0);
@@ -261,17 +282,16 @@ body_content.addEventListener("click", (e) => {
         let isThereSelection = selection.childNodes.length;
         let targetNode = getRange.startContainer.parentNode;
 
-        spanColor.style.color = btn_color.value;
+        span.style.color = btn_color.value;
         if (rng.rangeCount > 0) {
           if (isThereSelection > 0) {
-            console.log(targetNode.localName);
             if (targetNode.localName == "span") {
               targetNode.remove();
-              spanColor.appendChild(selection);
-              getRange.insertNode(spanColor);
+              span.appendChild(selection);
+              getRange.insertNode(span);
             } else {
-              spanColor.appendChild(selection);
-              getRange.insertNode(spanColor);
+              span.appendChild(selection);
+              getRange.insertNode(span);
             }
           } else {
             targetNode.style.color = btn_color.value;
