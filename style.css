@@ -14,21 +14,22 @@ body {
 }
 
 .content {
-    height: 500px;
+    position: relative;
+    background-color: red !important;
+    width: 745px;
 }
 
 .content .body {
-    width: 762px;
-    max-width: 762px;
+    height: 500px;
+    max-width: 100%;
     padding: 20px;
-    height: 100%;
+    overflow-y: auto;
     border: 1px solid gray;
     outline: none;
     background-color: #FFF;
 }
 
 .content .tools {
-    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -50,11 +51,15 @@ body {
     vertical-align: middle;
 }
 
+.content .tools {
+    position: relative;
+}
+
 .content .tools .toggle-heading {
     position: absolute;
     width: inherit;
     top: 100%;
-    transform: translateX(50%);
+    left: 12%;
     display: grid;
     visibility: hidden;
 }
@@ -87,8 +92,9 @@ body {
     color: #333;
 }
 
+.content .show-link,
 .content .add-edit-link {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -97,9 +103,11 @@ body {
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.content .add-edit-link input {
+.content .add-edit-link input:not(input[type="checkbox"]) {
     display: block;
     outline: none;
+    width: 100%;
+    border: 1px solid #c8c8c8;
     padding: 5px;
     margin: 5px 0;
 }
@@ -107,6 +115,16 @@ body {
 .content .add-edit-link label,
 .content .add-edit-link button {
     display: inline-block;
+    border-radius: 4px;
+}
+
+.content .add-edit-link button:nth-of-type(2) {
+    background-color: transparent;
+    color: red;
+}
+
+.content .add-edit-link button:nth-of-type(1):hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .content .add-edit-link label,
@@ -118,6 +136,10 @@ body {
     user-select: none;
 }
 
-.content .add-edit-link button:hover {
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+.length-letters-words {
+    position: absolute;
+    display: flex;
+    right: 0;
+    column-gap: 10px;
 }
+

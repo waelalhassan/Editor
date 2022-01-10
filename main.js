@@ -1,3 +1,4 @@
+const parent_content = document.querySelector("#parent_content");
 const body_content = document.querySelector("#body");
 const btn_h1 = document.querySelector("#Heading_1");
 const btn_h2 = document.querySelector("#Heading_2");
@@ -56,7 +57,7 @@ function createEditLink(t) {
   save.setAttribute("type", "button");
   cancel.setAttribute("type", "button");
 
-  input_text.setAttribute("placeholder", "title");
+  input_text.setAttribute("placeholder", "TITLE");
   input_href.setAttribute("placeholder", "URL");
   input_text.setAttribute("type", "text");
   input_href.setAttribute("type", "text");
@@ -71,8 +72,8 @@ function createEditLink(t) {
   parent.appendChild(input_href);
   parent.appendChild(check);
   parent.appendChild(label);
-  actions.appendChild(save)
-  actions.appendChild(cancel)
+  actions.appendChild(save);
+  actions.appendChild(cancel);
   parent.appendChild(actions);
   btn_link.parentElement.appendChild(parent);
 
@@ -94,7 +95,7 @@ function createEditLink(t) {
 
   cancel.onclick = function () {
     parent.remove();
-  }
+  };
 }
 
 const spanHeading = document.createElement("span");
@@ -200,17 +201,10 @@ body_content.addEventListener("click", (e) => {
     const parent = document.createElement("div");
     const nameURL = document.createElement("span");
     const btnEdit = document.createElement("button");
-    parent.style.cssText = `
-    position: absolute;
-    top: ${t.getBoundingClientRect().top}px;
-    left: ${t.getBoundingClientRect().left}px;
-    transform: translate(-50%, -50%);
-    background-color: #333;
-    color: #FFF;
-    padding: 10px;
-    `;
+    parent.className = "show-link";
     nameURL.textContent = t.href;
     btnEdit.textContent = "Edit";
+    btnEdit.setAttribute("type", "button");
 
     parent.appendChild(nameURL);
     parent.appendChild(btnEdit);
@@ -431,3 +425,28 @@ body_content.addEventListener("click", (e) => {
     createEditLink(t);
   };
 }); // end body_content
+
+// count words & letters
+const parentInfo = document.createElement("div");
+const nodeLengthLetters = document.createElement("p");
+const nodeLengthWords = document.createElement("p");
+
+body_content.addEventListener("keyup", () => {
+  const content = body_content.textContent;
+  const lengthOfLetters = content.trim();
+  const lengthOfWords = content.trim().split(" ");
+
+  if (lengthOfWords[0] == "") {
+    lengthOfWords.pop();
+  }
+
+    nodeLengthLetters.textContent = `Length letters: ${lengthOfLetters.length}`;
+    nodeLengthWords.textContent = `Length Words: ${lengthOfWords.length}`;
+    parentInfo.className = "length-letters-words";
+
+    parentInfo.appendChild(nodeLengthLetters);
+    parentInfo.appendChild(nodeLengthWords);
+    parent_content.appendChild(parentInfo);
+
+  });
+
