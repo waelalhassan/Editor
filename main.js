@@ -250,6 +250,36 @@ body_content.addEventListener("click", (e) => {
       }
     };
 
+    // change color selected string
+    let spanColor = document.createElement("span");
+    btn_color.onclick = function () {
+      let rng = window.getSelection();
+      let getRange = rng.getRangeAt(0);
+
+      btn_color.onchange = function () {
+        let selection = getRange.extractContents();
+        let isThereSelection = selection.childNodes.length;
+        let targetNode = getRange.startContainer.parentNode;
+
+        spanColor.style.color = btn_color.value;
+        if (rng.rangeCount > 0) {
+          if (isThereSelection > 0) {
+            console.log(targetNode.localName);
+            if (targetNode.localName == "span") {
+              targetNode.remove();
+              spanColor.appendChild(selection);
+              getRange.insertNode(spanColor);
+            } else {
+              spanColor.appendChild(selection);
+              getRange.insertNode(spanColor);
+            }
+          } else {
+            targetNode.style.color = btn_color.value;
+          }
+        }
+      };
+    };
+
     btn_link.onclick = function () {
       createEditLink(t);
     };
@@ -332,16 +362,3 @@ body_content.addEventListener("click", (e) => {
     };
   }
 }); // end body_content
-
-// change color selected string
-btn_color.addEventListener("click", () => {
-  let rng = window.getSelection().getRangeAt(0);
-
-  btn_color.addEventListener("change", () => {
-    let selectContent = rng.extractContents();
-    let span_s = document.createElement("span");
-    span_s.style.color = btn_color.value;
-    span_s.appendChild(selectContent);
-    rng.insertNode(span_s);
-  });
-});
