@@ -143,37 +143,57 @@ body_content.addEventListener("click", (e) => {
         if (selection.rangeCount > 0) {
           let getRange = selection.getRangeAt(0);
           let parentNode = getRange.startContainer.parentNode;
-          let parentE = parentNode.parentElement;
 
-          if (parentNode.localName == "span") {
-            let dk = parentNode.parentElement.childNodes;
-            function getNewElement(tagName, contents) {
-              let newElement = document.createElement(tagName);
-              if (typeof tagName === "undefined") {
-                newElement = document.createTextNode(contents);
-              } else {
-                newElement.innerHTML = contents;
-              }
-              return newElement;
-            }
-
-            for (let i of dk) {
-              if (parentNode.localName !== textNode) {
-                parentE.remove();
-                newNode.appendChild(getNewElement(i.localName, i.textContent));
-                getRange.insertNode(newNode);
-              }
+          function checkIfHasChildrens() {
+            if (parentNode.localName == "span") {
+              return parentNode.parentElement;
+            } else {
+              return parentNode;
             }
           }
 
-          if (parentNode.parentElement.getAttribute("id") == "body") {
-            if (parentNode.localName !== textNode) {
-              let nodeValue = document.createTextNode(
-                getRange.commonAncestorContainer.nodeValue
-              );
-              parentNode.remove();
-              newNode.appendChild(nodeValue);
-              getRange.insertNode(newNode);
+          if (
+            checkIfHasChildrens().parentElement.getAttribute("id") == "body"
+          ) {
+            if (checkIfHasChildrens().children.length > 0) {
+              let dk = checkIfHasChildrens().childNodes;
+              console.log(dk);
+
+              function getNewElement(tagName, contents, cssStyle) {
+                let newElement = document.createElement(tagName);
+                if (typeof tagName === "undefined") {
+                  newElement = document.createTextNode(contents);
+                } else {
+                  newElement.style.color = cssStyle;
+                  newElement.innerHTML = contents;
+                }
+                return newElement;
+              }
+
+              for (let i of dk) {
+                if (parentNode.localName !== textNode) {
+                  checkIfHasChildrens().remove();
+                  newNode.appendChild(
+                    getNewElement(i.localName, i.textContent, getColorSpan())
+                  );
+                  getRange.insertNode(newNode);
+
+                  function getColorSpan() {
+                    if (i.localName == "span") {
+                      return i.style.color;
+                    }
+                  }
+                }
+              }
+            } else {
+              if (parentNode.localName !== textNode) {
+                let nodeValue = document.createTextNode(
+                  getRange.commonAncestorContainer.nodeValue
+                );
+                parentNode.remove();
+                newNode.appendChild(nodeValue);
+                getRange.insertNode(newNode);
+              }
             }
           }
         }
