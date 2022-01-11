@@ -77,24 +77,51 @@ function createEditLink(t) {
   parent.appendChild(actions);
   btn_link.parentElement.appendChild(parent);
 
+  const selection = window.getSelection();
+  input_text.value = selection.toString();
+
+  createFakeMark();
+  function createFakeMark() {
+    const mark = document.createElement("mark");
+    mark.style.color = "#FFF";
+    mark.style.backgroundColor = "#308fff";
+    mark.id = "fake_mark";
+    let range = selection.getRangeAt(0);
+    let selectNode = range.extractContents();
+    mark.appendChild(selectNode);
+    range.insertNode(mark);
+  }
+
+  function removeFakeMark() {
+    const fake_mark = document.querySelector("#fake_mark");
+
+    if (fake_mark) {
+      const text_node = document.createTextNode(fake_mark.textContent);
+      const csRange = document.createRange();
+      csRange.selectNode(fake_mark);
+      csRange.insertNode(text_node);
+      fake_mark.remove();
+    }
+
+    parent.remove();
+  }
+
   save.onclick = function () {
     const title = input_text.value;
     const link_h = input_href.value;
     a.textContent = title;
     a.href = link_h;
-
     if (check.checked == true) a.setAttribute("target", "_blank");
 
-    let range = document.createRange();
-
-    range.selectNode(t);
-    range.insertNode(a);
-    t.remove();
+    const cRange = document.createRange();
+    cRange.selectNode(document.querySelector("#fake_mark"));
+    cRange.insertNode(a);
+    document.querySelector("#fake_mark").remove();
     parent.remove();
   };
 
   cancel.onclick = function () {
-    parent.remove();
+    removeFakeMark();
   };
 }
 
@@ -208,7 +235,7 @@ body_content.addEventListener("click", (e) => {
 
     parent.appendChild(nameURL);
     parent.appendChild(btnEdit);
-    t.parentElement.appendChild(parent);
+    parent_content.appendChild(parent);
 
     btnEdit.onclick = function () {
       createEditLink(t);
@@ -440,13 +467,11 @@ body_content.addEventListener("keyup", () => {
     lengthOfWords.pop();
   }
 
-    nodeLengthLetters.textContent = `Length letters: ${lengthOfLetters.length}`;
-    nodeLengthWords.textContent = `Length Words: ${lengthOfWords.length}`;
-    parentInfo.className = "length-letters-words";
+  nodeLengthLetters.textContent = `Length letters: ${lengthOfLetters.length}`;
+  nodeLengthWords.textContent = `Length Words: ${lengthOfWords.length}`;
+  parentInfo.className = "length-letters-words";
 
-    parentInfo.appendChild(nodeLengthLetters);
-    parentInfo.appendChild(nodeLengthWords);
-    parent_content.appendChild(parentInfo);
-
-  });
-
+  parentInfo.appendChild(nodeLengthLetters);
+  parentInfo.appendChild(nodeLengthWords);
+  parent_content.appendChild(parentInfo);
+});

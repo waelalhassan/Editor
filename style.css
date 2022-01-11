@@ -51,6 +51,12 @@ body {
     vertical-align: middle;
 }
 
+.content .tools .heading {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
 .content .tools {
     position: relative;
 }
@@ -94,7 +100,7 @@ body {
 
 .content .show-link,
 .content .add-edit-link {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
