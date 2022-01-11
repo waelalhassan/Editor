@@ -42,11 +42,12 @@ toggle_heading.onmouseleave = function () {
 };
 
 const spanHeading = document.createElement("span");
-const parent = document.createElement("div");
+const parentEdit = document.createElement("div");
 const nameURL = document.createElement("span");
 const btnEdit = document.createElement("button");
+const closeBtn = document.createElement("button");
 
-body_content.addEventListener("click", (e) => {
+body_content.onclick = function (e) {
   const t = e.target;
   const pFirst = document.createElement("p");
 
@@ -149,17 +150,23 @@ body_content.addEventListener("click", (e) => {
 
   if (t.localName == "a") {
     if (document.querySelector("#parent_add_new_link") == null) {
-      parent.className = "show-link";
+      parentEdit.className = "show-link";
       nameURL.textContent = t.href;
       btnEdit.textContent = "Edit";
+      closeBtn.textContent = "Close";
       btnEdit.setAttribute("type", "button");
+      parentEdit.style.cssText = `
+      top: ${t.getBoundingClientRect().top + t.offsetHeight}px;
+      left: ${t.getBoundingClientRect().left}px;
+      `;
 
-      parent.appendChild(nameURL);
-      parent.appendChild(btnEdit);
-      parent_content.appendChild(parent);
+      parentEdit.appendChild(nameURL);
+      parentEdit.appendChild(btnEdit);
+      parentEdit.appendChild(closeBtn);
+      parent_content.appendChild(parentEdit);
 
       btnEdit.onclick = function () {
-        parent.remove();
+        parentEdit.remove();
         const a = document.createElement("a");
         const parent_box = document.createElement("div");
         const actions = document.createElement("div");
@@ -187,6 +194,10 @@ body_content.addEventListener("click", (e) => {
         parent_box.className = "add-edit-link";
         parent_box.className = "add-edit-link";
         parent_box.id = "parent_edit_link";
+        parent_box.style.cssText = `
+        top: ${t.getBoundingClientRect().top + t.offsetHeight}px;
+        left: ${t.getBoundingClientRect().left}px;
+        `;
 
         parent_box.appendChild(input_text);
         parent_box.appendChild(input_href);
@@ -210,6 +221,10 @@ body_content.addEventListener("click", (e) => {
         cancel.onclick = function () {
           parent_box.remove();
         };
+      };
+
+      closeBtn.onclick = function () {
+        parentEdit.remove();
       };
     }
   }
@@ -257,13 +272,14 @@ primary functionality
           if (checkIfHasChildrens().children.length > 0) {
             let dk = checkIfHasChildrens().childNodes;
 
-            function getNewElement(tagName, contents, cssStyle) {
+            function getNewElement(tagName, contents, cssStyle, href) {
               let newElement = document.createElement(tagName);
               if (typeof tagName === "undefined") {
                 newElement = document.createTextNode(contents);
               } else {
                 newElement.style.color = cssStyle;
                 newElement.innerHTML = contents;
+                newElement.href = href;
               }
               return newElement;
             }
@@ -272,7 +288,12 @@ primary functionality
               if (parentNode.localName !== textNode) {
                 checkIfHasChildrens().remove();
                 newNode.appendChild(
-                  getNewElement(i.localName, i.textContent, getColorSpan())
+                  getNewElement(
+                    i.localName,
+                    i.textContent,
+                    getColorSpan(),
+                    i.href
+                  )
                 );
                 getRange.insertNode(newNode);
 
@@ -432,106 +453,114 @@ primary functionality
   //-----------------------------------
   //? create link tag
   //-----------------------------------
+  const a = document.createElement("a");
+  const parent = document.createElement("div");
+  const actions = document.createElement("div");
+  const input_text = document.createElement("input");
+  const input_href = document.createElement("input");
+  const save = document.createElement("button");
+  const cancel = document.createElement("button");
+  const check = document.createElement("input");
+  const label = document.createElement("label");
+
   btn_link.onclick = function () {
-    const a = document.createElement("a");
-    const parent = document.createElement("div");
-    const actions = document.createElement("div");
-    const input_text = document.createElement("input");
-    const input_href = document.createElement("input");
-    const save = document.createElement("button");
-    const cancel = document.createElement("button");
-    const check = document.createElement("input");
-    const label = document.createElement("label");
+    if (!t.classList.contains("body")) {
+      document.querySelector("#parent_add_new_link") ? document.querySelector("#parent_add_new_link").remove() : "";
 
-    document.querySelector(".show-link") ? document.querySelector(".show-link").remove() : "";
+      document.querySelector(".show-link")
+        ? document.querySelector(".show-link").remove()
+        : "";
 
-    save.textContent = "Save";
-    cancel.textContent = "Cancel";
-    save.setAttribute("type", "button");
-    cancel.setAttribute("type", "button");
+      save.textContent = "Save";
+      cancel.textContent = "Cancel";
+      save.setAttribute("type", "button");
+      cancel.setAttribute("type", "button");
 
-    input_text.setAttribute("placeholder", "TITLE");
-    input_href.setAttribute("placeholder", "URL");
-    input_text.setAttribute("type", "text");
-    input_href.setAttribute("type", "text");
-    check.setAttribute("type", "checkbox");
-    check.setAttribute("value", "on");
-    label.setAttribute("for", "adding_new_url");
-    check.setAttribute("id", "adding_new_url");
-    label.textContent = "Open the link in a new window";
-    parent.className = "add-edit-link";
-    parent.id = "parent_add_new_link";
+      input_text.setAttribute("placeholder", "TITLE");
+      input_href.setAttribute("placeholder", "URL");
+      input_text.setAttribute("type", "text");
+      input_href.setAttribute("type", "text");
+      check.setAttribute("type", "checkbox");
+      check.setAttribute("value", "on");
+      label.setAttribute("for", "adding_new_url");
+      check.setAttribute("id", "adding_new_url");
+      label.textContent = "Open the link in a new window";
+      parent.className = "add-edit-link";
+      parent.id = "parent_add_new_link";
+      parent.style.cssText = `
+      top: ${t.getBoundingClientRect().top + t.offsetHeight}px;
+      left: ${t.getBoundingClientRect().left}px;
+      `;
 
-    parent.appendChild(input_text);
-    parent.appendChild(input_href);
-    parent.appendChild(check);
-    parent.appendChild(label);
-    actions.appendChild(save);
-    actions.appendChild(cancel);
-    parent.appendChild(actions);
-    parent_content.appendChild(parent);
+      parent.appendChild(input_text);
+      parent.appendChild(input_href);
+      parent.appendChild(check);
+      parent.appendChild(label);
+      actions.appendChild(save);
+      actions.appendChild(cancel);
+      parent.appendChild(actions);
+      parent_content.appendChild(parent);
 
-    const selection = window.getSelection();
-    input_text.value = selection.toString();
+      const selection = window.getSelection();
+      input_text.value = selection.toString();
 
-    createFakeMark();
-    function createFakeMark() {
-      const mark = document.createElement("mark");
-      mark.style.color = "#FFF";
-      mark.style.backgroundColor = "#308fff";
-      mark.id = "fake_mark";
-      let range = selection.getRangeAt(0);
-      let selectNode = range.extractContents();
-      mark.appendChild(selectNode);
-      range.insertNode(mark);
-    }
-
-    function removeFakeMark() {
-      const fake_mark = document.querySelector("#fake_mark");
-
-      if (fake_mark) {
-        const text_node = document.createTextNode(fake_mark.textContent);
-        const csRange = document.createRange();
-        csRange.selectNode(fake_mark);
-        csRange.insertNode(text_node);
-        fake_mark.remove();
+      createFakeMark();
+      function createFakeMark() {
+        const mark = document.createElement("mark");
+        mark.style.color = "#FFF";
+        mark.style.backgroundColor = "#308fff";
+        mark.id = "fake_mark";
+        let range = selection.getRangeAt(0);
+        let selectNode = range.extractContents();
+        mark.appendChild(selectNode);
+        range.insertNode(mark);
       }
 
-      parent.remove();
-    }
+      function removeFakeMark() {
+        const fake_mark = document.querySelector("#fake_mark");
 
-    save.onclick = function () {
-      const title = input_text.value;
-      const link_h = input_href.value;
-      a.textContent = title;
-      a.href = link_h;
-      if (check.checked == true) a.setAttribute("target", "_blank");
-      const dRange = document.createRange();
+        if (fake_mark) {
+          const text_node = document.createTextNode(fake_mark.textContent);
+          const csRange = document.createRange();
+          csRange.selectNode(fake_mark);
+          csRange.insertNode(text_node);
+          fake_mark.remove();
+        }
 
-      if (document.querySelector("#fake_mark").textContent.length == 0) {
-        dRange.selectNode(t);
-        dRange.insertNode(a);
-        t.remove();
-        parent.remove();
-      } else {
-        dRange.selectNode(document.querySelector("#fake_mark"));
-        dRange.insertNode(a);
-        document.querySelector("#fake_mark").remove();
         parent.remove();
       }
 
+      save.onclick = function () {
+        const title = input_text.value;
+        const link_h = input_href.value;
+        a.textContent = title;
+        a.href = link_h;
+        if (check.checked == true) a.setAttribute("target", "_blank");
+        const dRange = document.createRange();
 
-    };
+        if (document.querySelector("#fake_mark").textContent.length == 0) {
+          dRange.selectNode(t);
+          dRange.insertNode(a);
+          t.remove();
+          parent.remove();
+        } else {
+          dRange.selectNode(document.querySelector("#fake_mark"));
+          dRange.insertNode(a);
+          document.querySelector("#fake_mark").remove();
+          parent.remove();
+        }
+      };
 
-    cancel.onclick = function () {
-      removeFakeMark();
-    };
+      cancel.onclick = function () {
+        removeFakeMark();
+      };
+    }
   };
 
   /*--------------------------
 end primary functionality
 ---------------------------*/
-}); // end body_content
+}; // end body_content
 
 /*--------------------------
 count words & letters
