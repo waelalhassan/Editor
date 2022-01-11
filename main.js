@@ -256,7 +256,6 @@ primary functionality
         if (checkIfHasChildrens().parentElement.getAttribute("id") == "body") {
           if (checkIfHasChildrens().children.length > 0) {
             let dk = checkIfHasChildrens().childNodes;
-            console.log(dk);
 
             function getNewElement(tagName, contents, cssStyle) {
               let newElement = document.createElement(tagName);
@@ -444,6 +443,8 @@ primary functionality
     const check = document.createElement("input");
     const label = document.createElement("label");
 
+    document.querySelector(".show-link") ? document.querySelector(".show-link").remove() : "";
+
     save.textContent = "Save";
     cancel.textContent = "Cancel";
     save.setAttribute("type", "button");
@@ -507,16 +508,19 @@ primary functionality
       if (check.checked == true) a.setAttribute("target", "_blank");
       const dRange = document.createRange();
 
-      if (dRange.toString() == "") {
+      if (document.querySelector("#fake_mark").textContent.length == 0) {
         dRange.selectNode(t);
-        dRange.insertNode(a)
+        dRange.insertNode(a);
         t.remove();
+        parent.remove();
       } else {
         dRange.selectNode(document.querySelector("#fake_mark"));
         dRange.insertNode(a);
         document.querySelector("#fake_mark").remove();
+        parent.remove();
       }
-      parent.remove();
+
+
     };
 
     cancel.onclick = function () {
