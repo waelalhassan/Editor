@@ -41,103 +41,20 @@ toggle_heading.onmouseleave = function () {
   toggle_heading.classList.remove("active");
 };
 
-// Global functions
-function createEditLink(t) {
-  const a = document.createElement("a");
-  const parent = document.createElement("div");
-  const actions = document.createElement("div");
-  const input_text = document.createElement("input");
-  const input_href = document.createElement("input");
-  const save = document.createElement("button");
-  const cancel = document.createElement("button");
-  const check = document.createElement("input");
-  const label = document.createElement("label");
-  save.textContent = "Save";
-  cancel.textContent = "Cancel";
-  save.setAttribute("type", "button");
-  cancel.setAttribute("type", "button");
-
-  input_text.setAttribute("placeholder", "TITLE");
-  input_href.setAttribute("placeholder", "URL");
-  input_text.setAttribute("type", "text");
-  input_href.setAttribute("type", "text");
-  check.setAttribute("type", "checkbox");
-  check.setAttribute("value", "on");
-  label.setAttribute("for", "new_window");
-  check.setAttribute("id", "new_window");
-  label.textContent = "Open the link in a new window";
-  parent.className = "add-edit-link";
-
-  parent.appendChild(input_text);
-  parent.appendChild(input_href);
-  parent.appendChild(check);
-  parent.appendChild(label);
-  actions.appendChild(save);
-  actions.appendChild(cancel);
-  parent.appendChild(actions);
-  btn_link.parentElement.appendChild(parent);
-
-  const selection = window.getSelection();
-  input_text.value = selection.toString();
-
-  createFakeMark();
-  function createFakeMark() {
-    const mark = document.createElement("mark");
-    mark.style.color = "#FFF";
-    mark.style.backgroundColor = "#308fff";
-    mark.id = "fake_mark";
-    let range = selection.getRangeAt(0);
-    let selectNode = range.extractContents();
-    mark.appendChild(selectNode);
-    range.insertNode(mark);
-  }
-
-  function removeFakeMark() {
-    const fake_mark = document.querySelector("#fake_mark");
-
-    if (fake_mark) {
-      const text_node = document.createTextNode(fake_mark.textContent);
-      const csRange = document.createRange();
-      csRange.selectNode(fake_mark);
-      csRange.insertNode(text_node);
-      fake_mark.remove();
-    }
-
-    parent.remove();
-  }
-
-  save.onclick = function () {
-    const title = input_text.value;
-    const link_h = input_href.value;
-    a.textContent = title;
-    a.href = link_h;
-    if (check.checked == true) a.setAttribute("target", "_blank");
-
-    const cRange = document.createRange();
-    cRange.selectNode(document.querySelector("#fake_mark"));
-    cRange.insertNode(a);
-    document.querySelector("#fake_mark").remove();
-    parent.remove();
-  };
-
-  cancel.onclick = function () {
-    removeFakeMark();
-  };
-}
-
 const spanHeading = document.createElement("span");
+const parent = document.createElement("div");
+const nameURL = document.createElement("span");
+const btnEdit = document.createElement("button");
 
 body_content.addEventListener("click", (e) => {
-  // let hover = document.querySelectorAll(":hover");
-  // let t = hover.item(hover.length - 1);
   const t = e.target;
-
   const pFirst = document.createElement("p");
 
   pFirst.style.cssText = paragraph_style;
   const br = document.createElement("br");
   pFirst.appendChild(br);
 
+  //! fix first line of content
   if (body_content.children.length < 1) {
     if (body_content.firstChild.nodeName == "#text") {
       body_content.removeChild(body_content.firstChild);
@@ -145,10 +62,13 @@ body_content.addEventListener("click", (e) => {
     }
   }
 
+  //? prevent get target from body
   if (e.target.classList.contains("body")) {
     e.preventDefault();
   } else {
-    // real node
+    //-----------------------------------
+    //? knowledge the target element and what the style of it
+    //-----------------------------------
     function realNode(ndoeName, btn) {
       for (let iv = 0; iv < tools.length; iv++) {
         if (t.localName == ndoeName) {
@@ -157,7 +77,6 @@ body_content.addEventListener("click", (e) => {
             let dom = tools[du++];
             dom.classList.remove("active");
           }
-
           btn.classList.add("active");
         }
       }
@@ -224,26 +143,81 @@ body_content.addEventListener("click", (e) => {
     });
   }
 
+  //-----------------------------------
+  //? edit the target link
+  //-----------------------------------
+
   if (t.localName == "a") {
-    const parent = document.createElement("div");
-    const nameURL = document.createElement("span");
-    const btnEdit = document.createElement("button");
-    parent.className = "show-link";
-    nameURL.textContent = t.href;
-    btnEdit.textContent = "Edit";
-    btnEdit.setAttribute("type", "button");
+    if (document.querySelector("#parent_add_new_link") == null) {
+      parent.className = "show-link";
+      nameURL.textContent = t.href;
+      btnEdit.textContent = "Edit";
+      btnEdit.setAttribute("type", "button");
 
-    parent.appendChild(nameURL);
-    parent.appendChild(btnEdit);
-    parent_content.appendChild(parent);
+      parent.appendChild(nameURL);
+      parent.appendChild(btnEdit);
+      parent_content.appendChild(parent);
 
-    btnEdit.onclick = function () {
-      createEditLink(t);
-      parent.remove();
-    };
+      btnEdit.onclick = function () {
+        parent.remove();
+        const a = document.createElement("a");
+        const parent_box = document.createElement("div");
+        const actions = document.createElement("div");
+        const input_text = document.createElement("input");
+        const input_href = document.createElement("input");
+        const save = document.createElement("button");
+        const cancel = document.createElement("button");
+        const check = document.createElement("input");
+        const label = document.createElement("label");
+
+        save.textContent = "Save";
+        cancel.textContent = "Cancel";
+        save.setAttribute("type", "button");
+        cancel.setAttribute("type", "button");
+
+        input_text.setAttribute("placeholder", "New Title");
+        input_href.setAttribute("placeholder", "New URL");
+        input_text.setAttribute("type", "text");
+        input_href.setAttribute("type", "text");
+        check.setAttribute("type", "checkbox");
+        check.setAttribute("value", "on");
+        label.setAttribute("for", "adding_new_url");
+        check.setAttribute("id", "adding_new_url");
+        label.textContent = "Open the link in a new window";
+        parent_box.className = "add-edit-link";
+        parent_box.className = "add-edit-link";
+        parent_box.id = "parent_edit_link";
+
+        parent_box.appendChild(input_text);
+        parent_box.appendChild(input_href);
+        parent_box.appendChild(check);
+        parent_box.appendChild(label);
+        actions.appendChild(save);
+        actions.appendChild(cancel);
+        parent_box.appendChild(actions);
+        parent_content.appendChild(parent_box);
+
+        save.onclick = function () {
+          a.textContent = input_text.value;
+          a.href = input_href.value;
+          const iRange = document.createRange();
+          iRange.selectNode(t);
+          iRange.insertNode(a);
+          t.remove();
+          parent_box.remove();
+        };
+
+        cancel.onclick = function () {
+          parent_box.remove();
+        };
+      };
+    }
   }
 
-  // start main function
+  /*--------------------------
+primary functionality
+---------------------------*/
+
   const div = document.createElement("div");
   const h1 = document.createElement("h1");
   const h2 = document.createElement("h2");
@@ -251,12 +225,7 @@ body_content.addEventListener("click", (e) => {
   const h4 = document.createElement("h4");
   const h5 = document.createElement("h5");
   const h6 = document.createElement("h6");
-  const b = document.createElement("b");
-  const i = document.createElement("i");
-  const span = document.createElement("span");
   const p = document.createElement("p");
-  const a = document.createElement("a");
-  const target_index = Array.from(t.parentNode.children).indexOf(t);
 
   p.style.cssText = paragraph_style;
   h1.style.cssText = heading_style;
@@ -266,6 +235,9 @@ body_content.addEventListener("click", (e) => {
   h5.style.cssText = heading_style;
   h6.style.cssText = heading_style;
 
+  //-----------------------------------
+  //? create headings & paragraph
+  //-----------------------------------
   function main_function(btn, newNode, textNode) {
     btn.onclick = function () {
       let selection = window.getSelection();
@@ -335,8 +307,10 @@ body_content.addEventListener("click", (e) => {
   main_function(btn_h6, h6, "h6");
   main_function(btn_paragraph, p, "p");
   main_function(btn_default, div, "div");
-  // main_function(btn_link, link, "a");
 
+  //-----------------------------------
+  //? make the text in [left, center, right]
+  //-----------------------------------
   function handleTextAlign(btn, textAlignValue) {
     btn.onclick = function () {
       t.style.textAlign = textAlignValue;
@@ -347,6 +321,9 @@ body_content.addEventListener("click", (e) => {
   handleTextAlign(btn_left, "left");
   handleTextAlign(btn_right, "right");
 
+  //-----------------------------------
+  //? make the text italic
+  //-----------------------------------
   btn_italic.onclick = function () {
     let nodeItalic = document.createElement("i");
     let iRange = window.getSelection();
@@ -383,6 +360,9 @@ body_content.addEventListener("click", (e) => {
     }
   };
 
+  //-----------------------------------
+  //? make the text bold
+  //-----------------------------------
   btn_bold.onclick = function () {
     let nodeBold = document.createElement("b");
     let iRange = window.getSelection();
@@ -419,7 +399,9 @@ body_content.addEventListener("click", (e) => {
     }
   };
 
-  // change color selected string
+  //-----------------------------------
+  //? change color selected string
+  //-----------------------------------
   const spanColor = document.createElement("span");
   btn_color.onclick = function () {
     let rng = window.getSelection();
@@ -448,12 +430,108 @@ body_content.addEventListener("click", (e) => {
     };
   };
 
+  //-----------------------------------
+  //? create link tag
+  //-----------------------------------
   btn_link.onclick = function () {
-    createEditLink(t);
+    const a = document.createElement("a");
+    const parent = document.createElement("div");
+    const actions = document.createElement("div");
+    const input_text = document.createElement("input");
+    const input_href = document.createElement("input");
+    const save = document.createElement("button");
+    const cancel = document.createElement("button");
+    const check = document.createElement("input");
+    const label = document.createElement("label");
+
+    save.textContent = "Save";
+    cancel.textContent = "Cancel";
+    save.setAttribute("type", "button");
+    cancel.setAttribute("type", "button");
+
+    input_text.setAttribute("placeholder", "TITLE");
+    input_href.setAttribute("placeholder", "URL");
+    input_text.setAttribute("type", "text");
+    input_href.setAttribute("type", "text");
+    check.setAttribute("type", "checkbox");
+    check.setAttribute("value", "on");
+    label.setAttribute("for", "adding_new_url");
+    check.setAttribute("id", "adding_new_url");
+    label.textContent = "Open the link in a new window";
+    parent.className = "add-edit-link";
+    parent.id = "parent_add_new_link";
+
+    parent.appendChild(input_text);
+    parent.appendChild(input_href);
+    parent.appendChild(check);
+    parent.appendChild(label);
+    actions.appendChild(save);
+    actions.appendChild(cancel);
+    parent.appendChild(actions);
+    parent_content.appendChild(parent);
+
+    const selection = window.getSelection();
+    input_text.value = selection.toString();
+
+    createFakeMark();
+    function createFakeMark() {
+      const mark = document.createElement("mark");
+      mark.style.color = "#FFF";
+      mark.style.backgroundColor = "#308fff";
+      mark.id = "fake_mark";
+      let range = selection.getRangeAt(0);
+      let selectNode = range.extractContents();
+      mark.appendChild(selectNode);
+      range.insertNode(mark);
+    }
+
+    function removeFakeMark() {
+      const fake_mark = document.querySelector("#fake_mark");
+
+      if (fake_mark) {
+        const text_node = document.createTextNode(fake_mark.textContent);
+        const csRange = document.createRange();
+        csRange.selectNode(fake_mark);
+        csRange.insertNode(text_node);
+        fake_mark.remove();
+      }
+
+      parent.remove();
+    }
+
+    save.onclick = function () {
+      const title = input_text.value;
+      const link_h = input_href.value;
+      a.textContent = title;
+      a.href = link_h;
+      if (check.checked == true) a.setAttribute("target", "_blank");
+      const dRange = document.createRange();
+
+      if (dRange.toString() == "") {
+        dRange.selectNode(t);
+        dRange.insertNode(a)
+        t.remove();
+      } else {
+        dRange.selectNode(document.querySelector("#fake_mark"));
+        dRange.insertNode(a);
+        document.querySelector("#fake_mark").remove();
+      }
+      parent.remove();
+    };
+
+    cancel.onclick = function () {
+      removeFakeMark();
+    };
   };
+
+  /*--------------------------
+end primary functionality
+---------------------------*/
 }); // end body_content
 
-// count words & letters
+/*--------------------------
+count words & letters
+---------------------------*/
 const parentInfo = document.createElement("div");
 const nodeLengthLetters = document.createElement("p");
 const nodeLengthWords = document.createElement("p");
@@ -464,7 +542,7 @@ body_content.addEventListener("keyup", () => {
   const lengthOfWords = content.trim().split(" ");
 
   if (lengthOfWords[0] == "") {
-    lengthOfWords.pop();
+    lengthOfWords.unshift();
   }
 
   nodeLengthLetters.textContent = `Length letters: ${lengthOfLetters.length}`;
@@ -475,3 +553,7 @@ body_content.addEventListener("keyup", () => {
   parentInfo.appendChild(nodeLengthWords);
   parent_content.appendChild(parentInfo);
 });
+
+/*--------------------------
+end count words & letters
+---------------------------*/
