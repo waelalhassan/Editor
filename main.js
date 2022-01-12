@@ -47,21 +47,22 @@ const nameURL = document.createElement("span");
 const btnEdit = document.createElement("button");
 const closeBtn = document.createElement("button");
 
-body_content.onclick = function (e) {
-  const t = e.target;
-  const pFirst = document.createElement("p");
+const pFirst = document.createElement("p");
+const br = document.createElement("br");
+pFirst.appendChild(br);
 
-  pFirst.style.cssText = paragraph_style;
-  const br = document.createElement("br");
-  pFirst.appendChild(br);
-
-  //! fix first line of content
-  if (body_content.children.length < 1) {
-    if (body_content.firstChild.nodeName == "#text") {
-      body_content.removeChild(body_content.firstChild);
-      body_content.appendChild(p);
+//! fix first line of content
+body_content.onkeyup = function () {
+  if (!body_content.firstChild) {
+    pFirst.style.cssText = paragraph_style;
+    if (body_content.children.length < 1) {
+      body_content.appendChild(pFirst);
     }
   }
+};
+
+body_content.onclick = function (e) {
+  const t = e.target;
 
   //? prevent get target from body
   if (e.target.classList.contains("body")) {
@@ -465,7 +466,9 @@ primary functionality
 
   btn_link.onclick = function () {
     if (!t.classList.contains("body")) {
-      document.querySelector("#parent_add_new_link") ? document.querySelector("#parent_add_new_link").remove() : "";
+      document.querySelector("#parent_add_new_link")
+        ? document.querySelector("#parent_add_new_link").remove()
+        : "";
 
       document.querySelector(".show-link")
         ? document.querySelector(".show-link").remove()
@@ -575,7 +578,7 @@ body_content.addEventListener("keyup", () => {
   const lengthOfWords = content.trim().split(" ");
 
   if (lengthOfWords[0] == "") {
-    lengthOfWords.unshift();
+    lengthOfWords.pop();
   }
 
   nodeLengthLetters.textContent = `Length letters: ${lengthOfLetters.length}`;
