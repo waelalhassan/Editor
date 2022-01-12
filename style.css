@@ -60,15 +60,15 @@ body {
     position: relative;
 }
 
+.content .tools .toggle-fontSize,
 .content .tools .toggle-heading {
-    position: absolute;
+    position: fixed;
     width: inherit;
-    top: 100%;
-    left: 12%;
     display: grid;
     visibility: hidden;
 }
 
+.content .tools .toggle-fontSize.active,
 .content .tools .toggle-heading.active {
     visibility: visible;
 }

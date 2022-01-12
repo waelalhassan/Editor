@@ -6,6 +6,9 @@ const btn_h3 = document.querySelector("#Heading_3");
 const btn_h4 = document.querySelector("#Heading_4");
 const btn_h5 = document.querySelector("#Heading_5");
 const btn_h6 = document.querySelector("#Heading_6");
+const fontSize = document.querySelector("#fontSize");
+const toggle_fontSize = document.querySelector("#toggle_fontSize");
+const toggle_fontSize_btns = document.querySelectorAll("#toggle_fontSize button");
 
 const tools = document.querySelectorAll("#tools button");
 const Heading = document.querySelector("#Heading");
@@ -25,21 +28,35 @@ const paragraph_style = `padding-bottom: 10px;
 word-break: break-all;`;
 const heading_style = `margin-bottom: 10px`;
 
-Heading.onmouseenter = function () {
-  toggle_heading.classList.add("active");
-};
+function handlePositionEl(el, list) {
+  list.style.cssText = `
+  top: ${el.getBoundingClientRect().top + el.offsetHeight}px;
+  left: ${el.getBoundingClientRect().left}px;
+  `;  
+}
+handlePositionEl(Heading, toggle_heading);
+handlePositionEl(fontSize, toggle_fontSize);
 
-toggle_heading.onmouseenter = function () {
-  toggle_heading.classList.add("active");
-};
+function dropdownMenu(el, list) {
+  el.onmouseenter = function () {
+    list.classList.add("active");
+  };
 
-Heading.onmouseleave = function () {
-  toggle_heading.classList.remove("active");
-};
+  el.onmouseleave = function () {
+    list.classList.remove("active");
+  };
 
-toggle_heading.onmouseleave = function () {
-  toggle_heading.classList.remove("active");
-};
+  list.onmouseenter = function () {
+    list.classList.add("active");
+  };
+
+  list.onmouseleave = function () {
+    list.classList.remove("active");
+  };
+}
+
+dropdownMenu(Heading, toggle_heading);
+dropdownMenu(fontSize, toggle_fontSize);
 
 const spanHeading = document.createElement("span");
 const parentEdit = document.createElement("div");
@@ -559,6 +576,21 @@ primary functionality
       };
     }
   };
+
+  //-----------------------------------
+  //? change font size
+  //-----------------------------------
+
+  toggle_fontSize_btns.forEach(e => {
+
+    e.onclick = function () {
+      const data_size = this.getAttribute("data-size")
+      t.style.fontSize = `${data_size}px`;
+    }
+
+  })
+
+
 
   /*--------------------------
 end primary functionality
