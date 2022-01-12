@@ -5,13 +5,12 @@
 }
 
 :root {
-    --main-color: #333;
-    --second-color: #f2f2f2;
+    --main-color: #f2f2f2;
+    --second-color: #333;
     --border-color: #333;
 }
 
 body {
-    position: relative;
     font-family: sans-serif;
     height: 100vh;
     display: grid;
@@ -19,29 +18,19 @@ body {
     background-color: #FFF;
 }
 
-.content {
+.parent-content {
     position: relative;
     background-color: var(--main-color);
     width: 745px;
 }
 
-.content .body {
-    height: 500px;
-    max-width: 100%;
-    padding: 20px;
-    overflow-y: auto;
-    border: 5px solid var(--main-color);
-    border-top: none;
-    outline: none;
-    background-color: #FFF;
-}
-
-.content .tools {
+.parent-content .tools {
     display: flex;
     align-items: center;
+    border-bottom: 1px solid #333;
 }
 
-.content .tools button {
+.parent-content .tools button {
     padding: 3px 25px;
     font-size: 18px;
     border: none;
@@ -51,29 +40,30 @@ body {
     cursor: pointer;
 }
 
-.content .tools button > svg {
+.parent-content .tools button > svg {
     width: 11px;
     vertical-align: middle;
 }
 
-.content .tools {
+.parent-content .tools {
     position: relative;
 }
 
-.content .tools .toggle-fontSize,
-.content .tools .toggle-heading {
+.parent-content .tools .toggle-fontSize,
+.parent-content .tools .toggle-heading {
     position: fixed;
     width: inherit;
     display: grid;
     visibility: hidden;
+    z-index: 6;
 }
 
-.content .tools .toggle-fontSize.active,
-.content .tools .toggle-heading.active {
+.parent-content .tools .toggle-fontSize.active,
+.parent-content .tools .toggle-heading.active {
     visibility: visible;
 }
 
-.content .tools input[type="color"] {
+.parent-content .tools input[type="color"] {
     -webkit-appearance: none;
     border: none;
     display: block;
@@ -81,28 +71,41 @@ body {
     cursor: pointer;
 }
 
-.content .tools input[type="color"]::-webkit-color-swatch-wrapper {
+.parent-content .tools input[type="color"]::-webkit-color-swatch-wrapper {
 	padding: 0;
 }
-.content .tools input[type="color"]::-webkit-color-swatch {
+.parent-content .tools input[type="color"]::-webkit-color-swatch {
 	border: none;
 }
 
-.content .tools button.active,
-.content .tools button:hover {
+.parent-content .tools button.active,
+.parent-content .tools button:hover {
     background-color: var(--second-color);
     color: var(--main-color);
 }
 
-.content .show-link,
-.content .add-edit-link {
-    position: fixed;
+.parent-content .editable {
+    position: relative;
+    height: 500px;
+    max-width: 100%;
+    padding: 20px;
+    overflow-y: auto;
+    border: 1px solid #333;
+    border-top: none;
+    outline: none;
+    background-color: #FFF;
+}
+
+.parent-content .show-link,
+.parent-content .add-edit-link {
+    position: absolute;
     background-color: #fafafa;
     padding: 15px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 6;
 }
 
-.content .show-link button {
+.parent-content .show-link button {
     cursor: pointer;
     outline: none;
     border: none;
@@ -113,16 +116,16 @@ body {
     border-radius: 4px;
 }
 
-.content .show-link button:last-of-type {
+.parent-content .show-link button:last-of-type {
     background-color: transparent;
     color: var(--main-color);
 }
 
-.content .show-link button:hover:not(.content .show-link button:last-of-type) {
+.parent-content .show-link button:hover:not(.parent-content .show-link button:last-of-type) {
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.content .add-edit-link input:not(input[type="checkbox"]) {
+.parent-content .add-edit-link input:not(input[type="checkbox"]) {
     display: block;
     outline: none;
     width: 100%;
@@ -131,13 +134,13 @@ body {
     margin: 5px 0;
 }
 
-.content .add-edit-link label,
-.content .add-edit-link button {
+.parent-content .add-edit-link label,
+.parent-content .add-edit-link button {
     display: inline-block;
     border-radius: 4px;
 }
 
-.content .add-edit-link button {
+.parent-content .add-edit-link button {
     outline: none;
     border: none;
     padding: 5px 30px;
@@ -146,17 +149,17 @@ body {
     cursor: pointer;
 }
 
-.content .add-edit-link button:nth-of-type(2) {
+.parent-content .add-edit-link button:nth-of-type(2) {
     background-color: transparent;
     color: red;
 }
 
-.content .add-edit-link button:nth-of-type(1):hover {
+.parent-content .add-edit-link button:nth-of-type(1):hover {
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.content .add-edit-link label,
-.content .add-edit-link input[type="checkbox"] {
+.parent-content .add-edit-link label,
+.parent-content .add-edit-link input[type="checkbox"] {
     display: inline-block;
     padding: 10px 5px;
     vertical-align: middle;

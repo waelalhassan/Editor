@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="content" id="parent_content">
+    <div class="parent-content" id="parent_content">
       <div class="tools" id="tools">
         <button class="btn" title="Default style" type="button" id="default">
           Default
@@ -188,13 +188,18 @@
         </div>
         <input title="Change color" type="color" id="color" />
       </div>
-      <div contenteditable="true" class="body" id="body">
-        <p style="padding-bottom: 10px; word-break: break-all">
-          <br />
-        </p>
-      </div>
+      <iframe class="editable" id="editable" frameborder="1"></iframe>
     </div>
 
     <script src="main.js"></script>
   </body>
 </html>
+
+
+
+
+
+
+
+
+
