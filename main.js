@@ -354,9 +354,9 @@ primary functionality
               getRange.commonAncestorContainer.nodeValue
             );
 
+            parentNode.remove();
             nodeHeading.appendChild(nodeValue);
             getRange.insertNode(nodeHeading);
-            parentNode.remove();
           }
         }
       }
