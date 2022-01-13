@@ -41,28 +41,20 @@ iframe.width = `${parent_content.getBoundingClientRect().width}`;
 
 function handlePositionEl(el, list) {
   list.style.cssText = `
-  top: ${el.getBoundingClientRect().top + el.offsetHeight}px;
-  left: ${el.getBoundingClientRect().left}px;
+  top: ${el.getBoundingClientRect().top + el.offsetHeight + 15 }px;
+  left: ${el.getBoundingClientRect().left - 5}px;
   `;
 }
 handlePositionEl(Heading, toggle_heading);
 handlePositionEl(fontSize, toggle_fontSize);
 
 function dropdownMenu(el, list) {
-  el.onmouseenter = function () {
-    list.classList.add("active");
+  el.onclick = function () {
+    list.classList.toggle("active");
   };
 
-  el.onmouseleave = function () {
-    list.classList.remove("active");
-  };
-
-  list.onmouseenter = function () {
-    list.classList.add("active");
-  };
-
-  list.onmouseleave = function () {
-    list.classList.remove("active");
+  list.onclick = function () {
+    list.classList.toggle("active");
   };
 }
 
@@ -182,7 +174,7 @@ body_content.onclick = function (e) {
     if (t.localName == "a") {
       if (document.querySelector("#parent_add_new_link") == null) {
         parentEdit.className = "show-link";
-        nameURL.textContent = t.href;
+        nameURL.textContent = specific_length(t.href, 40);
         btnEdit.textContent = "Edit";
         closeBtn.textContent = "Close";
         btnEdit.setAttribute("type", "button");
@@ -259,6 +251,11 @@ body_content.onclick = function (e) {
         };
       }
     }
+
+    function specific_length(href, maxLength) {
+      return `${href.substr(0, maxLength)} ...`;
+    }
+
 
     /*--------------------------
 primary functionality
