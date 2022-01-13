@@ -9,6 +9,7 @@ documentIframe.body.innerHTML = `<p style="margin-bottom: 10px; margin-top: 10px
 
 const parent_content = document.querySelector("#parent_content");
 const body_content = iframe.contentWindow.document.querySelector("#body");
+
 const btn_h1 = document.querySelector("#Heading_1");
 const btn_h2 = document.querySelector("#Heading_2");
 const btn_h3 = document.querySelector("#Heading_3");
@@ -24,6 +25,7 @@ const toggle_fontSize_btns = document.querySelectorAll(
 const tools = document.querySelectorAll("#tools button");
 const Heading = document.querySelector("#Heading");
 const toggle_heading = document.querySelector("#toggle-heading");
+const toggle_heading_btns = document.querySelectorAll("#toggle-heading button");
 
 const btn_center = document.querySelector("#center");
 const btn_link = document.querySelector("#link");
@@ -84,6 +86,11 @@ body_content.onkeyup = function () {
 
 body_content.onclick = function (e) {
   const t = e.target;
+
+  toggle_fontSize.classList.remove("active");
+  toggle_heading.classList.remove("active");
+  // toggle_fontSize toggle_heading
+
   //? prevent get target from body
   if (e.target.classList.contains("body")) {
     e.preventDefault();
@@ -282,83 +289,78 @@ primary functionality
     //-----------------------------------
     //? create headings & paragraph
     //-----------------------------------
-    function main_function(btn, newNode, textNode) {
-      btn.onclick = function () {
-        let selection = windowIframe.getSelection();
-        if (selection.rangeCount > 0) {
-          let getRange = selection.getRangeAt(0);
-          let parentNode = getRange.startContainer.parentNode;
 
-          function checkIfHasChildrens() {
-            if (parentNode.localName == "span") {
-              return parentNode.parentElement;
-            } else {
-              return parentNode;
-            }
-          }
+    toggle_heading_btns.forEach((e) => {
+      e.onclick = function () {
+        const heading_val = e.getAttribute("heading-val");
+        getHeadingBtn(heading_val);
+      };
+    });
 
-          if (
-            checkIfHasChildrens().parentElement.getAttribute("id") == "body"
-          ) {
-            if (checkIfHasChildrens().children.length > 0) {
-              let dk = checkIfHasChildrens().childNodes;
+    function getHeadingBtn(heading) {
+      const nodeHeading = documentIframe.createElement(heading);
+      const selection = windowIframe.getSelection();
 
-              function getNewElement(tagName, contents, cssStyle, href) {
-                let newElement = documentIframe.createElement(tagName);
-                if (typeof tagName === "undefined") {
-                  newElement = documentIframe.createTextNode(contents);
-                } else {
-                  newElement.style.color = cssStyle;
-                  newElement.innerHTML = contents;
-                  newElement.href = href;
-                }
-                return newElement;
-              }
+      if (selection.rangeCount > 0) {
+        const getRange = selection.getRangeAt(0);
+        const parentNode = getRange.startContainer.parentNode;
 
-              for (let i of dk) {
-                if (parentNode.localName !== textNode) {
-                  checkIfHasChildrens().remove();
-                  newNode.appendChild(
-                    getNewElement(
-                      i.localName,
-                      i.textContent,
-                      getColorSpan(),
-                      i.href
-                    )
-                  );
-                  getRange.insertNode(newNode);
-
-                  function getColorSpan() {
-                    if (i.localName == "span") {
-                      return i.style.color;
-                    }
-                  }
-                }
-              }
-            } else {
-              if (parentNode.localName !== textNode) {
-                let nodeValue = documentIframe.createTextNode(
-                  getRange.commonAncestorContainer.nodeValue
-                );
-                parentNode.remove();
-                newNode.appendChild(nodeValue);
-                getRange.insertNode(newNode);
-              }
-            }
+        function checkIfHasChildrens() {
+          if (parentNode.localName == "span") {
+            return parentNode.parentElement;
+          } else {
+            return parentNode;
           }
         }
-        btn.parentElement.classList.remove("active");
-      };
-    }
 
-    main_function(btn_h1, h1, "h1");
-    main_function(btn_h2, h2, "h2");
-    main_function(btn_h3, h3, "h3");
-    main_function(btn_h4, h4, "h4");
-    main_function(btn_h5, h5, "h5");
-    main_function(btn_h6, h6, "h6");
-    main_function(btn_paragraph, p, "p");
-    main_function(btn_default, div, "div");
+        if (checkIfHasChildrens().children.length > 0) {
+          let dk = checkIfHasChildrens().childNodes;
+
+          function getNewElement(tagName, contents, cssStyle, href) {
+            let newElement = documentIframe.createElement(tagName);
+            if (typeof tagName === "undefined") {
+              newElement = documentIframe.createTextNode(contents);
+            } else {
+              newElement.style.color = cssStyle;
+              newElement.innerHTML = contents;
+              newElement.href = href;
+            }
+            return newElement;
+          }
+
+          for (let i of dk) {
+            if (parentNode.localName !== heading) {
+              checkIfHasChildrens().remove();
+              nodeHeading.appendChild(
+                getNewElement(
+                  i.localName,
+                  i.textContent,
+                  getColorSpan(),
+                  i.href
+                )
+              );
+              getRange.insertNode(nodeHeading);
+
+              function getColorSpan() {
+                if (i.localName == "span") {
+                  return i.style.color;
+                }
+              }
+            }
+          }
+        } else {
+          if (parentNode.localName !== heading) {
+            let nodeValue = documentIframe.createTextNode(
+              getRange.commonAncestorContainer.nodeValue
+            );
+
+            nodeHeading.appendChild(nodeValue);
+            getRange.insertNode(nodeHeading);
+            parentNode.remove();
+          }
+        }
+      }
+    }
 
     //-----------------------------------
     //? make the text in [left, center, right]
@@ -386,7 +388,7 @@ primary functionality
         let checkIfSelectedText = selectedText.childNodes.length;
 
         if (checkIfSelectedText >= 1) {
-          if (t.localName == "b") {
+          if (t.localName == "i") {
             getR.selectNode(t);
             getR.insertNode(selectedText);
             t.remove();
